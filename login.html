@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			.tips{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<h2>登录</h2>
+		<input type="text" name="username" id="username" value="" />
+		<span class="tips">
+			用户名格式 规则
+		</span>
+		
+		<br>
+		<input type="password" name="password" id="password" value="" /><span class="tips">
+			密码规则
+		</span>
+			<br>
+		<input type="button" id="login-btn" value="登录" />
+		<span class="tips">
+			
+		</span>
+		<script src="js/cookie.js" type="text/javascript" charset="utf-8"></script>	
+		<script type="text/javascript">
+			
+			
+			let userNameIpt = document.querySelector('#username');
+			let passwordIpt = document.querySelector('#password');
+			
+			let isUsername = false;
+			let isPassword = false;
+			
+			userNameIpt.onchange = function(){
+				if(/^\w{6,}$/.test(this.value)){
+					isUsername = true;
+					this.nextElementSibling.style.display = 'none';
+				}else{
+					isUsername = false;
+					this.nextElementSibling.style.display = 'block';
+				}
+			}
+			passwordIpt.onchange = function(){
+				if(/^.{6,}$/.test(this.value)){
+					isPassword = true;
+					this.nextElementSibling.style.display = 'none';
+				}else{
+					isPassword = false;
+					this.nextElementSibling.style.display = 'block';
+				}
+			}
+			
+			
+			
+			let loginBtn = document.querySelector('#login-btn');
+		
+			
+			loginBtn.onclick = function(){
+				
+				if(isUsername && isPassword){
+					//ajax 注册账号
+					let username = userNameIpt.value;
+					let pd = passwordIpt.value;
+					console.log(username,pd);
+					
+					let loginAPI = `http://192.168.1.200/ajax-project/api/login.php?username=${username}&password=${pd}`;
+					console.log(loginAPI);
+					
+					let xhr = new XMLHttpRequest();
+					xhr.open('get',loginAPI);
+					xhr.send();
+					xhr.onload = function(){
+						if(xhr.status == 200){
+							let obj = JSON.parse(xhr.responseText);
+							console.log(obj);
+							if(obj.code == 1){
+								//跳转 首页 
+								loginBtn.nextElementSibling.style.display = 'none'	;
+								
+								//登录成功以后把 下个页面需要用的信息 id，username 存到cookie
+								
+								setCookie('id',obj.data.id,30);
+								setCookie('username',obj.data.username,30);
+								
+								
+								
+								location.href = 'index1.html';
+								
+								
+								
+							}else if(obj.code == 0){
+								loginBtn.nextElementSibling.style.display = 'block'
+								loginBtn.nextElementSibling.innerHTML = obj.msg;
+							}
+						}
+					}
+					
+				}
+				
+				
+			}
+			
+		</script>	
+		
+	</body>
+</html>

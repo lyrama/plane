@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<form>
+		<input type="text" name="" id="ipt" list="list">
+		<datalist id="list">
+			<!-- <option labor="提示1" value="1">
+			<option labor="提示2" value="2"> -->
+		</datalist>
+	</form>
+	<script type="text/javascript">
+		let list=document.getElementById('list')
+		function jQuery1102005870953128482925_1527047297477(obj){
+			console.log(obj)
+			if(obj.status==0){
+				for(let i=0;i<4;i++){
+				let op=document.createElement('option')
+				op.value=obj.s[i]
+				list.appendChild(op)
+				}
+			}
+			
+		}
+
+		let search =document.getElementById('ipt')
+		search.oninput=function(){
+            list.innerHTML=''
+			let word=this.value
+			let api = `https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=${word}&json=1&p=3&sid=1434_21111_26350_22158&req=2&csor=0&cb=jQuery1102005870953128482925_1527047297477&_=1527047297480`
+			let sc=document.createElement('script')
+			sc.src=api
+			document.body.appendChild(sc)
+		}
+		
+	</script>
+</body>
+</html>

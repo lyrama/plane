@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<style type="text/css">
+		/*input::-webkit-outer-spin-button,
+		input::-webkit-inner-spin-button {
+    	-webkit-appearance: none !important;
+    	margin: 0;*/
+}
+	</style>
+</head>
+<body>
+	<ul id="list" >
+
+	</ul>
+	<script src="js/cookie.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		let userid =  getCookie('id');
+		let list=document.querySelector('#list')
+		let cartListAPI = `http://192.168.1.200/ajax-project/api/cart-list.php?id=${userid}`;
+		let xhr = new XMLHttpRequest();
+		xhr.open('get',cartListAPI);
+		xhr.send()
+		xhr.onload = function()
+		{
+			if(xhr.status == 200)
+			{
+				// console.log(xhr.responseText)
+				let obj = JSON.parse(xhr.responseText);
+				let html=''
+				obj.data.forEach(function(p,index)
+				{
+					html = `
+					<li>
+					<span>${p.pname}</span>
+					<span>${p.pprice}</span>
+					<input class="minus" type="button" value="-" />
+					<input class="ipt" type="number" min="1" value="${p.pnum}">
+					<input class="add" type="button" value="+" />
+					<a id="${index}" class="del" href="javascript:;">删除</a>
+					</li>
+					`;
+
+					list.innerHTML =  list.innerHTML +html;
+				})
+				let as=document.querySelectorAll('.del')
+				let adds=document.querySelectorAll('.add')
+				let minuss=document.querySelectorAll('.minus')
+				let ipt=document.querySelectorAll('.ipt')
+				for(let i=0;i<as.length;i++)
+				{
+					let delApi=`http://192.168.1.200/ajax-project/api/cart-delete.php?uid=${userid}&pid=${obj.data[i].pid}`
+					as[i].onclick=function()
+					{
+						const xh = new XMLHttpRequest()
+						xh.open('get',delApi)
+						xh.send()
+						xh.onload=function()
+						{
+							if(xh.status==200)
+							{
+								var ob = JSON.parse(xh.responseText);
+								if(ob.msg=='删除成功')
+								{
+									// console.log(as[i])
+									as[i].parentNode.remove()
+								}
+							}
+						}
+					}
+					adds[i].onclick=function()
+					{
+						// console.log(adds[i].previousElementSibling)
+                     adds[i].previousElementSibling.value++
+					}
+					minuss[i].onclick=function()
+					{
+                     if(minuss[i].nextElementSibling.value>1)
+                     	{
+                     		minuss[i].nextElementSibling.value--
+                     	}
+					}
+				}
+
+			}
+
+
+		}
+
+
+	</script>
+</body>
+</html>

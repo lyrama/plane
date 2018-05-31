@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			.login-tips{
+				display: none;
+			}
+			.list li img{
+				width: 100px;
+				height: 100px;
+			}
+		</style>
+	</head>
+	<body>
+		
+		 <div id="unlogin-div" class="login-tips">
+		 	<a href="login.html">去登录</a>
+		 </div>
+		 <div id="login-div" class="login-tips">
+		 	用户：<span></span>，你好
+		 </div>
+		 
+		 
+		 <ul class="list"> 
+		 	<li>
+		 		<!--<a href="detail.html">
+		 			
+		 			<h2>iPhone X</h2>
+			 		<span>9998</span>
+			 		<img src=""/>
+			 		<a href="javascript:;">加入购物车</a>
+		 			
+		 		</a>-->
+		 	</li>
+		 </ul>
+		 
+		<script src="js/cookie.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+
+		// 正式服务器（生产环境，pro环境）
+		
+		// 测试服务器，开发服务器（测试环境，dev环境，开发环境）
+		
+		
+		// 登录，注册，首页（商品列表），添加购物车，购物车
+		
+		
+		//在首页当中 读取cookie  获取用户id 和 usename
+		
+		let userid =  getCookie('id');
+		let username = getCookie('username');
+		console.log(userid,username);
+		
+		var loginTips = document.querySelectorAll('.login-tips')
+		
+		if(userid){
+			console.log('已经登录了')
+			loginTips[1].style.display='block';
+			loginTips[1].querySelector('span').innerHTML = username;
+			
+		}else{
+			console.log('没有登录')
+			loginTips[0].style.display='block';
+		}
+		
+		
+		
+		//请求商品列表
+		let plistAPI = 'http://192.168.1.200/ajax-project/api/productlist.php';
+		
+		let xhr = new XMLHttpRequest();
+		xhr.open('get',plistAPI);
+		xhr.send();
+		xhr.onload = function(){
+			if(xhr.status == 200){
+				var obj = JSON.parse(xhr.responseText)
+				console.log(obj);
+				
+				
+				let html = '';
+				obj.data.forEach(function(p){
+					html += `
+						<li>
+	
+							<a href="detail.html?id=${p.pid}">
+		 			
+			 					<h2>${p.pname}</h2>
+						 		<span>${p.pprice}</span>
+						 		<img src="${p.pimg}"/>
+				 				 			
+		 					</a>
+											 		
+					 	</li>
+					
+					`;
+					
+					
+				});
+				
+				console.log(html);
+				
+				let list = document.querySelector('.list');
+				list.innerHTML = html;
+				
+				
+			}
+		}
+
+		</script>
+			
+	</body>
+</html>

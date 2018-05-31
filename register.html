@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			.tips{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<h2>注册</h2>
+		<input type="text" name="username" id="username" value="" />
+		<span class="tips">
+			用户名格式 规则
+		</span>
+		
+		<br>
+		<input type="password" name="password" id="password" value="" /><span class="tips">
+			密码规则
+		</span>
+			<br>
+		<input type="button" id="reg-btn" value="注册" />
+			
+		<script type="text/javascript">
+			
+			
+			let userNameIpt = document.querySelector('#username');
+			let passwordIpt = document.querySelector('#password');
+			
+			let isUsername = false;
+			let isPassword = false;
+			
+			userNameIpt.onchange = function(){
+				if(/^\w{6,}$/.test(this.value)){
+					isUsername = true;
+					this.nextElementSibling.style.display = 'none';
+				}else{
+					isUsername = false;
+					this.nextElementSibling.style.display = 'block';
+				}
+			}
+			passwordIpt.onchange = function(){
+				if(/^.{6,}$/.test(this.value)){
+					isPassword = true;
+					this.nextElementSibling.style.display = 'none';
+				}else{
+					isPassword = false;
+					this.nextElementSibling.style.display = 'block';
+				}
+			}
+			
+			
+			
+			let regBtn = document.querySelector('#reg-btn');
+		
+			
+			regBtn.onclick = function(){
+				
+				if(isUsername && isPassword){
+					//ajax 注册账号
+					let username = userNameIpt.value;
+					let pd = passwordIpt.value;
+					console.log(username,pd);
+					
+					let regAPI = `http://192.168.1.200/ajax-project/api/reg.php?username=${username}&password=${pd}`;
+					console.log(regAPI);
+					
+					let xhr = new XMLHttpRequest();
+					xhr.open('get',regAPI);
+					xhr.send();
+					xhr.onload = function(){
+						if(xhr.status == 200){
+							let obj = JSON.parse(xhr.responseText);
+							console.log(obj);
+							if(obj.code == 1){
+								//跳转 首页 
+								
+								location.href = 'login.html';
+							}
+						}
+					}
+					
+				}
+				
+				
+			}
+			
+		</script>	
+		
+	</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			.box img{
+				width: 100px;
+				height: 100px;
+			}
+		</style>
+	</head>
+	<body>
+		<a href="mycart.html">我的购物车</a>
+		<div class="box">
+			<!--<h2></h2>
+			<p></p>
+			<p></p>
+			<img src=""/>
+			<a href="javascript:;">加入购物车</a>-->
+		</div>
+		
+		<script src="js/cookie.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			//获取 搜索字段
+			console.log(location.search)
+			console.log(getUrlParam('id'));
+			
+			//获取用户id
+			var uid = getCookie('id')
+			
+			var pid = getUrlParam('id');
+			//根据 商品id 获取商品的详细信息
+			
+			let detailAPI = `http://192.168.1.200/ajax-project/api/detail.php?id=${pid}`;
+			
+			let xhr = new XMLHttpRequest();
+			xhr.open('get',detailAPI);
+			xhr.send();
+			xhr.onload = function(){
+				if(xhr.status == 200){
+					var obj = JSON.parse(xhr.responseText);
+					console.log(obj);
+					
+					var p = obj.data;
+					
+					var html = `
+					
+						<h2>${p.pname}</h2>
+						<p>${p.pprice}</p>
+						
+						<img src="${p.pimg}"/>
+						<a class='addCartBtn' href="javascript:;">加入购物车</a>
+						
+						<p>${p.pdesc}</p>
+						
+					
+					`;
+					let box = document.querySelector('.box');
+					box.innerHTML  = html;
+					
+					var addCartBtn = document.querySelector('.addCartBtn');
+					addCartBtn.onclick = function(){
+						
+						let addProductAPI = `http://192.168.1.200/ajax-project/api/add-product.php?pid=${p.pid}&uid=${uid}&pnum=1`;
+						console.log(addProductAPI)
+						var xh = new XMLHttpRequest()
+						xh.open('get',addProductAPI)
+						xh.send();
+						xh.onload = function(){
+							if(xh.status == 200){
+								console.log(xh.responseText);
+								var obj = JSON.parse(xh.responseText);
+								console.log(obj);
+								alert('加入购物车功能')
+							}
+						}
+						
+						
+					}
+					
+					
+					
+				}
+			}
+
+
+			
+		</script>
+	</body>
+</html>
